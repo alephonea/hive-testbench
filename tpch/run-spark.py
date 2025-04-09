@@ -4,6 +4,7 @@ import os
 import os.path
 from pyspark import SparkContext
 from pyspark.sql import SQLContext
+import time
 
 scale = 200
 database = 'tpch_flat_orc_{}'.format(scale)
@@ -15,14 +16,18 @@ def run_query(target_dir, sc, sql, num):
     query_path = os.path.join(os.path.dirname(__file__), '..', 'sample-queries-tpch/tpch_query{}.sql'.format(num))
     query_text = open(query_path).read()
 
-    handle = sql.sql(query_text)
-    plan = explain(sc, handle)
+    try:
+        handle = sql.sql(query_text)
+        plan = explain(sc, handle)
 
-    start_time = time.time()
-    handle.collect()
-    end_time = time.time()
+        start_time = time.time()
+        handle.collect()
+        end_time = time.time()
 
-    duration = end_time - start_time
+        duration = end_time - start_time
+    except Exception as e:
+        print("Query ", num, "failed ", str(e))
+        continue
 
     print("Query ", num, " took ", duration)
     print(plan)
@@ -40,7 +45,7 @@ def main(sc):
     sql.sql('USE ' + database).collect()
     target = os.path.join(os.getenv('HOME'), 'spark_run_200')
     os.makedirs(target, exist_ok=True)
-    for num in range(1, 23):
+    for num in range(2, 23):
         run_query(target, sc, sql, num)
 
 if __name__ == '__main__':
