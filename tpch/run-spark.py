@@ -5,6 +5,9 @@ import os.path
 from pyspark import SparkContext
 from pyspark.sql import SQLContext
 
+scale = 200
+database = 'tpch_flat_orc_{}'.format(scale)
+
 def explain(sc, handle):
     return sc._jvm.PythonSQLUtils.explainString(handle._jdf.queryExecution(), "formatted")
 
@@ -34,6 +37,7 @@ def run_query(target_dir, sc, sql, num):
 
 def main(sc):
     sql = SQLContext(sc)
+    sql.sql('USE ' + database).collect()
     target = os.path.join(os.getenv('HOME'), 'spark_run_200')
     os.makedirs(target, exist_ok=True)
     for num in range(1, 23):
