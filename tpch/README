@@ -1,4 +1,8 @@
 
+0) When creating Hadoop cluster, enable the following services:
+HDFS, HIVE, MAPREDUCE, SPARK, TEZ, YARN, LIVY
+Add Livy for a spark connector
+
 1) Check out this repo on the hadoop master.
 
 2) Install build tools:
