@@ -1,7 +1,9 @@
 #!/usr/bin/pyspark
 
-import os.path.join
+import os
+import os.path
 from pyspark import SparkContext
+from pyspark.sql import SQLContext
 
 def explain(sc, handle):
     return sc._jvm.PythonSQLUtils.explainString(handle._jdf.queryExecution(), "formatted")
@@ -32,8 +34,10 @@ def run_query(target_dir, sc, sql, num):
 
 def main(sc):
     sql = SQLContext(sc)
+    target = os.path.join(os.getenv('HOME'), 'spark_run_200')
+    os.makedirs(target, exist_ok=True)
     for num in range(1, 23):
-        run_query(sc, sql, num)
+        run_query(target, sc, sql, num)
 
 if __name__ == '__main__':
     sc = SparkContext()
