@@ -1,0 +1,51 @@
+
+1) Check out this repo on the hadoop master.
+
+2) Install build tools:
+
+apt install gcc maven
+
+3) ./tpch-build.sh
+
+4) Generate data:
+
+tpch-setup.sh was broken down into four scripts, to help debug failures:
+
+./tpch/generate.sh $SCALE
+./tpch/load-text.sh $SCALE
+./tpch/load-orc.sh $SCALE
+./tpch/compute-stats.sh $SCALE
+
+At the end, per-table directories with files in ORC format should be available here:
+
+$ hdfs dfs -ls -C /user/hive/warehouse/tpch_flat_orc_200.db
+/user/hive/warehouse/tpch_flat_orc_200.db/customer
+/user/hive/warehouse/tpch_flat_orc_200.db/lineitem
+/user/hive/warehouse/tpch_flat_orc_200.db/nation
+/user/hive/warehouse/tpch_flat_orc_200.db/orders
+/user/hive/warehouse/tpch_flat_orc_200.db/part
+/user/hive/warehouse/tpch_flat_orc_200.db/partsupp
+/user/hive/warehouse/tpch_flat_orc_200.db/region
+/user/hive/warehouse/tpch_flat_orc_200.db/supplier
+
+To check statistics:
+$ sudo -u postgres psql
+postgres=# \c metastore
+metastore=# \d "TAB_COL_STATS";
+metastore=# select * from "TAB_COL_STATS";
+
+Alternatively, take scale=200 data in ORC format from an S3 bucket tpch1:
+https://console.yandex.cloud/folders/b1gc52165f3897s3clvr/storage/buckets/tpch1
+
+and find how to import it into Hive. Still need to run the statistics step tpch/compute-stats.sh
+
+== S3 ==
+
+To work with S3, install and configure S3cmd:
+https://yandex.cloud/en/docs/storage/tools/s3cmd
+
+Create a bucket, and configure "Access policy" to allow PutObject:
+Potentially it is also necessary to configure "Access rights"
+
+See screenshots
+https://gist.github.com/alephonea/f36ee19b91c8c662b100d1e692c680ab
