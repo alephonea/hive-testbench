@@ -1,5 +1,8 @@
 #!/usr/bin/pyspark
 
+import os.path.join
+from pyspark import SparkContext
+
 def explain(sc, handle):
     return sc._jvm.PythonSQLUtils.explainString(handle._jdf.queryExecution(), "formatted")
 
@@ -33,4 +36,5 @@ def main(sc):
         run_query(sc, sql, num)
 
 if __name__ == '__main__':
+    sc = SparkContext()
     main(sc)
