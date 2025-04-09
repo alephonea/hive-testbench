@@ -4,7 +4,7 @@ set -e
 set -x
 
 SCALE=200
-output=${HOME}/run_${SCALE}
+output=${HOME}/hive_run_${SCALE}
 
 mkdir -p $output
 
