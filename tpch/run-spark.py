@@ -27,7 +27,7 @@ def run_query(target_dir, sc, sql, num):
         duration = end_time - start_time
     except Exception as e:
         print("Query ", num, "failed ", str(e))
-        continue
+        return
 
     print("Query ", num, " took ", duration)
     print(plan)
